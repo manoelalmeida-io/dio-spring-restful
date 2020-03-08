@@ -1,6 +1,6 @@
 package one.digitalinnovation.restful.controller;
 
-import one.digitalinnovation.restful.model.Soldado;
+import one.digitalinnovation.restful.entity.SoldadoEntity;
 import one.digitalinnovation.restful.service.SoldadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,23 +16,23 @@ public class SoldadoController {
     private SoldadoService soldadoService;
 
     @GetMapping("/{cpf}")
-    public ResponseEntity<Soldado> buscarSoldado(@PathVariable(value = "cpf") final String cpf) {
+    public ResponseEntity<SoldadoEntity> buscarSoldado(@PathVariable(value = "cpf") final String cpf) {
         return ResponseEntity.ok(soldadoService.buscarSoldado(cpf));
     }
 
     @GetMapping
-    public ResponseEntity<List<Soldado>> buscarSoldados() {
+    public ResponseEntity<List<SoldadoEntity>> buscarSoldados() {
         return ResponseEntity.ok(soldadoService.buscarSoldados());
     }
 
     @PostMapping
-    public ResponseEntity<Soldado> criarSoldado(@RequestBody Soldado soldado) {
+    public ResponseEntity<SoldadoEntity> criarSoldado(@RequestBody SoldadoEntity soldado) {
         soldadoService.criarSoldado(soldado);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{cpf}")
-    public ResponseEntity editarSoldado(@PathVariable(value = "cpf") final String cpf, @RequestBody Soldado soldado) {
+    public ResponseEntity editarSoldado(@PathVariable(value = "cpf") final String cpf, @RequestBody SoldadoEntity soldado) {
         soldadoService.alterarSoldado(cpf, soldado);
         return ResponseEntity.ok().build();
     }

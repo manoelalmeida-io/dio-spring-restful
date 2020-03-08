@@ -1,45 +1,55 @@
 package one.digitalinnovation.restful.service;
 
-import one.digitalinnovation.restful.model.Soldado;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import one.digitalinnovation.restful.controller.request.SoldadoEditRequest;
+import one.digitalinnovation.restful.controller.response.SoldadoResponse;
+import one.digitalinnovation.restful.dto.Soldado;
+import one.digitalinnovation.restful.entity.SoldadoEntity;
+import one.digitalinnovation.restful.repository.SoldadoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SoldadoService {
 
-    public Soldado buscarSoldado (String cpf) {
-        Soldado soldado = new Soldado();
-        soldado.setCpf(cpf);
-        soldado.setNome("Legolas");
-        soldado.setRaca("Elfo");
-        soldado.setArma("Arco e flecha");
+    private SoldadoRepository soldadoRepository;
+    private ObjectMapper objectMapper;
 
-        return soldado;
+    public SoldadoService(SoldadoRepository soldadoRepository, ObjectMapper objectMapper) {
+        this.soldadoRepository = soldadoRepository;
+        this.objectMapper = objectMapper;
+    }
+
+    public SoldadoResponse buscarSoldado (Long id) {
+        SoldadoEntity soldado = soldadoRepository.findById(id).orElseThrow();
+        SoldadoResponse soldadoResponse = objectMapper.convertValue(soldado, SoldadoResponse.class);
+        return soldadoResponse;
     }
 
     public void criarSoldado (Soldado soldado) {
+        SoldadoEntity soldadoEntity = objectMapper.convertValue(soldado, SoldadoEntity.class);
+        soldadoRepository.save(soldadoEntity);
     }
 
-    public void alterarSoldado(String cpf, Soldado soldado) {
+    public void alterarSoldado(Long id, SoldadoEditRequest soldadoEditRequest) {
+        SoldadoEntity soldadoEntity = objectMapper.convertValue(soldadoEditRequest, SoldadoEntity.class);
+        soldadoEntity.setId(id);
+        soldadoRepository.save(soldadoEntity);
     }
 
-    public void deletarSoldado(String cpf) {
+    public void deletarSoldado(Long id) {
+        SoldadoEntity soldado = soldadoRepository.findById(id).orElseThrow();
+        soldadoRepository.delete(soldado);
     }
 
     public List<Soldado> buscarSoldados() {
-        Soldado soldado1 = new Soldado();
-        soldado1.setCpf("123456789");
-        soldado1.setNome("Legolas");
-        soldado1.setRaca("Elfo");
-        soldado1.setArma("Arco e flecha");
+        List<SoldadoEntity> all = soldadoRepository.findAll();
+        List<Soldado> soldadoStream = all.stream()
+                .map(it -> objectMapper.convertValue(it, Soldado.class))
+                .collect(Collectors.toList());
 
-        Soldado soldado2 = new Soldado();
-        soldado2.setCpf("987654321");
-        soldado2.setNome("Paloma");
-        soldado2.setRaca("Elfa");
-        soldado2.setArma("Arco e flecha");
-
-        return List.of(soldado1, soldado2);
+        return soldadoStream;
     }
 }
