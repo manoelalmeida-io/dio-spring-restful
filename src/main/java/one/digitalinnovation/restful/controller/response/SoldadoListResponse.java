@@ -5,12 +5,8 @@ import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
 @Getter @Setter
-public class SoldadoResponse extends RepresentationModel<SoldadoResponse> {
-
+public class SoldadoListResponse extends RepresentationModel<SoldadoListResponse> {
     private Long id;
-    private String cpf;
     private String nome;
     private String raca;
-    private String arma;
-    private String status;
 }
