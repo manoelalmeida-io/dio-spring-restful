@@ -28,7 +28,7 @@ public class FilterJava implements Filter {
                 .stream()
                 .collect(Collectors.toMap(it -> it, req::getHeader));
 
-        if (mapHeaders.get("Authorization") != null && mapHeaders.get("Authorization").equals("BATATINHA")) {
+        if (mapHeaders.get("authorization") != null && mapHeaders.get("authorization").equals("BATATINHA")) {
             chain.doFilter(request, response);
         } else {
             HttpServletResponse res = (HttpServletResponse) response;
